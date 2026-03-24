@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equazioni & Disequazioni — Preparazione Politecnico</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0eeea;
+    --border: #d8d4cc;
+    --accent: #1a56db;
+    --accent2: #e63946;
+    --accent3: #2d9e5f;
+    --accent4: #f4a261;
+    --text: #1a1a1a;
+    --text-muted: #6b6560;
+    --tab-active: #1a56db;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--text);
+    color: #fff;
+    padding: 18px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--accent);
+  }
+  header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  header span {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: #aaa;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── TABS ── */
+  .tab-bar {
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    padding: 0 48px;
+    gap: 4px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  .tab-btn {
+    padding: 16px 32px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-btn:hover:not(.active) { color: var(--text); background: var(--surface2); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ════════════════════════════════
+     TAB 1 — TEORIA
+  ════════════════════════════════ */
+  .teoria-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 48px;
+  }
+  .teoria-page h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .teoria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 28px;
+  }
+
+  .teoria-card {
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .teoria-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 22px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .teoria-card-header:hover { background: var(--surface2); }
+  .teoria-card-header .badge {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem; font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .teoria-card-header h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex: 1;
+  }
+  .teoria-card-header .chevron {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+  }
+  .teoria-card.open .chevron { transform: rotate(180deg); }
+
+  .teoria-card-body {
+    display: none;
+    padding: 20px 22px 24px;
+    border-top: 1px solid var(--border);
+  }
+  .teoria-card.open .teoria-card-body { display: block; }
+
+  /* formula boxes */
+  .formula-box {
+    background: var(--surface2);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-size: 0.98rem;
+  }
+  .formula-box.red { border-left-color: var(--accent2); }
+  .formula-box.green { border-left-color: var(--accent3); }
+  .formula-box.orange { border-left-color: var(--accent4); }
+
+  .schema-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 0.88rem;
+  }
+  .schema-table th {
+    background: var(--text);
+    color: #fff;
+    padding: 9px 14px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+  .schema-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .schema-table tr:nth-child(even) td { background: var(--surface2); }
+
+  .step-list {
+    list-style: none;
+    margin: 10px 0;
+  }
+  .step-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .step-list li:last-child { border-bottom: none; }
+  .step-list .num {
+    min-width: 24px; height: 24px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem; font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .warn-box {
+    background: #fff8e1;
+    border: 1px solid #f4a261;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.86rem;
+    margin-top: 14px;
+    color: #5a3a00;
+  }
+  .warn-box strong { color: #c85000; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .tag {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+  .tag.red { background: var(--accent2); }
+  .tag.green { background: var(--accent3); }
+
+  /* ════════════════════════════════
+     TAB 2 — ESERCIZI
+  ════════════════════════════════ */
+  .esercizi-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 48px;
+  }
+  .esercizi-page h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .exercise-card {
+    background: var(--surface);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .ex-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 28px;
+    background: var(--text);
+    color: #fff;
+  }
+  .ex-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: var(--accent);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+  }
+  .ex-question {
+    flex: 1;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  /* Timer */
+  .timer-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .timer-display {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+    min-width: 64px;
+    text-align: center;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+  .timer-display.warning { color: var(--accent4) !important; }
+  .timer-display.danger  { color: var(--accent2) !important; animation: blink 0.5s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0.4; } }
+
+  .timer-btn {
+    padding: 7px 14px;
+    border-radius: 7px;
+    border: none;
+    cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: all 0.15s;
+  }
+  .timer-btn.start  { background: var(--accent3); color: #fff; }
+  .timer-btn.reset  { background: #555; color: #fff; }
+  .timer-btn:hover  { filter: brightness(1.15); }
+
+  .ex-body {
+    padding: 24px 28px;
+  }
+
+  /* Image for exercises with graphs */
+  .ex-image {
+    text-align: center;
+    margin: 16px 0;
+  }
+  .ex-image img {
+    max-width: 100%;
+    max-height: 260px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  /* Options */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 18px 0 0;
+  }
+  .option-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 9px;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    background: var(--surface2);
+    transition: border-color 0.15s;
+  }
+  .option-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--accent);
+    min-width: 22px;
+    flex-shrink: 0;
+  }
+
+  /* Solution */
+  .solution-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 0;
+    background: none;
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.15s;
+    width: 100%;
+    justify-content: center;
+  }
+  .solution-toggle:hover { background: var(--accent); color: #fff; }
+
+  .solution-box {
+    display: none;
+    margin-top: 18px;
+    background: #eef4ff;
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+  .solution-box.visible { display: block; }
+
+  .solution-box h4 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .solution-steps {
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+  .solution-steps p { margin-bottom: 8px; }
+
+  .answer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent3);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-top: 10px;
+  }
+
+  /* ── progress bar ── */
+  .progress-bar-wrap {
+    background: var(--border);
+    height: 4px;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.4s;
+  }
+
+  /* beep audio notification via Web Audio API */
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📐 Equazioni &amp; Disequazioni</h1>
+  <span>Preparazione Test di Ingresso · Politecnico</span>
+</header>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('teoria',this)">📚 Scheda Teoria</button>
+  <button class="tab-btn" onclick="switchTab('esercizi',this)">✏️ Esercizi (34)</button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 1 — TEORIA
+══════════════════════════════════════════════ -->
+<div id="tab-teoria" class="tab-content active">
+<div class="teoria-page">
+  <h2>Scheda di riferimento rapido</h2>
+  <div class="teoria-grid">
+
+    <!-- 1. EQ I GRADO -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#1a56db">1</div>
+        <h3>Equazioni di I grado</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <div class="formula-box">\( ax + b = 0 \)</div>
+        <table class="schema-table">
+          <tr><th>Caso</th><th>Soluzione</th></tr>
+          <tr><td>\(a \ne 0\)</td><td>\(x = -\dfrac{b}{a}\)</td></tr>
+          <tr><td>\(a=0,\; b=0\)</td><td>\(\mathbb{R}\) (infiniti valori)</td></tr>
+          <tr><td>\(a=0,\; b\ne0\)</td><td>\(\emptyset\) (impossibile)</td></tr>
+        </table>
+        <div class="warn-box"><strong>Ricorda:</strong> Due equazioni sono equivalenti se hanno lo stesso insieme di soluzioni. Si possono sommare o moltiplicare entrambi i membri per una costante <strong>non nulla</strong>.</div>
+      </div>
+    </div>
+
+    <!-- 2. EQ II GRADO -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#e63946">2</div>
+        <h3>Equazioni di II grado</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <div class="formula-box">\( ax^2 + bx + c = 0 \quad (a \ne 0) \)</div>
+        <div class="formula-box red">\( \Delta = b^2 - 4ac \)</div>
+        <table class="schema-table">
+          <tr><th>\(\Delta\)</th><th>Soluzioni</th></tr>
+          <tr><td>\(\Delta > 0\)</td><td>\(x_{1,2} = \dfrac{-b \pm \sqrt{\Delta}}{2a}\)  —  2 radici distinte</td></tr>
+          <tr><td>\(\Delta = 0\)</td><td>\(x = -\dfrac{b}{2a}\)  —  radice doppia</td></tr>
+          <tr><td>\(\Delta < 0\)</td><td>\(\emptyset\) reale  —  nessuna soluzione reale</td></tr>
+        </table>
+        <div class="tag green">Formule di Viète</div>
+        <div class="formula-box green">\( x_1 + x_2 = -\dfrac{b}{a} \qquad x_1 \cdot x_2 = \dfrac{c}{a} \)</div>
+        <div class="warn-box"><strong>Radici di segno opposto</strong> ↔ prodotto \(x_1 x_2 = c/a < 0\) <strong>e</strong> \(\Delta > 0\)</div>
+      </div>
+    </div>
+
+    <!-- 3. EQ BIQUADRATICHE -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#7c3aed">3</div>
+        <h3>Equazioni biquadratiche</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <div class="formula-box">\( ax^4 + bx^2 + c = 0 \)</div>
+        <ul class="step-list">
+          <li><span class="num">1</span><span>Sostituzione: poni \(t = x^2\) → equazione in \(t\)</span></li>
+          <li><span class="num">2</span><span>Risolvi \(at^2+bt+c=0\); accetta solo \(t \ge 0\)</span></li>
+          <li><span class="num">3</span><span>Per ogni \(t_k>0\): \(x = \pm\sqrt{t_k}\)&nbsp;&nbsp;(2 soluzioni)<br>Per \(t_k=0\): \(x=0\)&nbsp;&nbsp;(1 soluzione)</span></li>
+        </ul>
+        <div class="warn-box"><strong>Attenzione:</strong> Se \(\Delta_t < 0\) o entrambe le radici \(t\) sono negative → <strong>nessuna soluzione reale</strong>.</div>
+      </div>
+    </div>
+
+    <!-- 4. EQ GRADO SUPERIORE -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#0891b2">4</div>
+        <h3>Equazioni di grado superiore</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <div class="tag">Raccoglimento a fattor comune</div>
+        <div class="formula-box">\( x^3(x^2 - 4) = 0 \;\Rightarrow\; x=0 \;\text{oppure}\; x^2=4 \)</div>
+        <div class="tag" style="margin-top:10px">Teorema di Ruffini</div>
+        <div class="formula-box">\( P(r)=0 \;\Rightarrow\; (x-r) \mid P(x) \)</div>
+        <p style="font-size:0.88rem;margin-top:6px;">Provare divisori interi del termine noto. Se \(P(r)=0\), dividere il polinomio per \((x-r)\) per abbassare il grado.</p>
+        <div class="tag orange" style="margin-top:10px">Sostituzione \(t = x^n\)</div>
+        <div class="formula-box orange">Es: \( 4x^6-12x^3+9=0 \) con \(t=x^3\) → \((2t-3)^2=0\)</div>
+      </div>
+    </div>
+
+    <!-- 5. EQ FRATTE -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#d97706">5</div>
+        <h3>Equazioni fratte</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <div class="formula-box">\( \dfrac{f(x)}{g(x)} = 0 \)</div>
+        <ul class="step-list">
+          <li><span class="num">1</span><span><strong>Dominio:</strong> \(g(x) \ne 0\) — escludi questi valori</span></li>
+          <li><span class="num">2</span><span>Risolvi \(f(x) = 0\)</span></li>
+          <li><span class="num">3</span><span>Tieni solo le soluzioni che rispettano il dominio</span></li>
+        </ul>
+        <div class="warn-box"><strong>Errore comune:</strong> annullare il denominatore può generare soluzioni spurie. Verificare sempre!</div>
+      </div>
+    </div>
+
+    <!-- 6. EQ IRRAZIONALI -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#059669">6</div>
+        <h3>Equazioni / Diseq. irrazionali</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <div class="two-col">
+          <div>
+            <div class="tag">Radice pari \(\sqrt[2k]{\cdot}\)</div>
+            <div class="formula-box">\(\sqrt{A} = B\)
+            <br><br>
+            \(\begin{cases}A \ge 0 \\ B \ge 0 \\ A = B^2\end{cases}\)</div>
+          </div>
+          <div>
+            <div class="tag orange">Radice dispari \(\sqrt[2k+1]{\cdot}\)</div>
+            <div class="formula-box orange">\(\sqrt[3]{A} \ge B\)
+            <br><br>
+            equivale a \(A \ge B^3\)<br>(monòtona su \(\mathbb{R}\))</div>
+          </div>
+        </div>
+        <div class="warn-box"><strong>Disequazione \(\sqrt{A} \le B\):</strong> richiedere \(A \ge 0\), \(B \ge 0\) e \(A \le B^2\).</div>
+      </div>
+    </div>
+
+    <!-- 7. EQ LOGARITMICHE -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#db2777">7</div>
+        <h3>Equazioni logaritmiche</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <div class="formula-box">\( \log_a f(x) = k \;\Longleftrightarrow\; f(x) = a^k \quad (f(x)>0) \)</div>
+        <ul class="step-list">
+          <li><span class="num">1</span><span>Eliminare il logaritmo esponenziando entrambi i membri</span></li>
+          <li><span class="num">2</span><span>Risolvere l'equazione ottenuta</span></li>
+          <li><span class="num">3</span><span>Verificare le condizioni di esistenza del log</span></li>
+        </ul>
+        <div class="formula-box red">Es: \(\log_3(2+x)^2 = 6 \Rightarrow (2+x)^2 = 3^6 = 729\)</div>
+      </div>
+    </div>
+
+    <!-- 8. EQ VALORE ASSOLUTO -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#7c3aed">8</div>
+        <h3>Eq. con valore assoluto</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <div class="formula-box">\( |f(x)| = c \)</div>
+        <table class="schema-table">
+          <tr><th>Caso</th><th>Risultato</th></tr>
+          <tr><td>\(c < 0\)</td><td>\(\emptyset\)</td></tr>
+          <tr><td>\(c = 0\)</td><td>\(f(x) = 0\)</td></tr>
+          <tr><td>\(c > 0\)</td><td>\(f(x)=c\) oppure \(f(x)=-c\)</td></tr>
+        </table>
+        <div class="formula-box orange">\( |f(x)| = g(x) \;\Leftrightarrow\; \begin{cases}f(x)=g(x) \\ f(x)\ge 0\end{cases} \cup \begin{cases}f(x)=-g(x) \\ f(x)<0\end{cases}\)</div>
+      </div>
+    </div>
+
+    <!-- 9. DISEQ I GRADO -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#1a56db">9</div>
+        <h3>Disequazioni di I grado</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <div class="formula-box">\( ax + b > 0 \)</div>
+        <table class="schema-table">
+          <tr><th>Caso</th><th>Soluzione</th></tr>
+          <tr><td>\(a > 0\)</td><td>\(x > -b/a\)</td></tr>
+          <tr><td>\(a < 0\)</td><td>\(x < -b/a\) &nbsp; (verso invertito!)</td></tr>
+          <tr><td>\(a=0,\;b>0\)</td><td>\(\mathbb{R}\)</td></tr>
+          <tr><td>\(a=0,\;b\le0\)</td><td>\(\emptyset\)</td></tr>
+        </table>
+        <div class="warn-box"><strong>Moltiplicare per un numero negativo inverte il verso della disuguaglianza!</strong></div>
+      </div>
+    </div>
+
+    <!-- 10. DISEQ II GRADO -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#e63946">10</div>
+        <h3>Disequazioni di II grado</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <p style="font-size:0.88rem;margin-bottom:10px;color:var(--text-muted)">Studia il segno della parabola \(f(x) = ax^2+bx+c\)</p>
+        <table class="schema-table">
+          <tr><th></th><th>\(a>0\), \(\Delta>0\)</th><th>\(a>0\), \(\Delta<0\)</th></tr>
+          <tr><td>\(f(x)>0\)</td><td>\(x < x_1\) o \(x > x_2\)</td><td>\(\mathbb{R}\)</td></tr>
+          <tr><td>\(f(x)<0\)</td><td>\(x_1 < x < x_2\)</td><td>\(\emptyset\)</td></tr>
+        </table>
+        <p style="font-size:0.82rem;margin-top:8px;color:var(--text-muted)">Per \(a < 0\): invertire i segni delle soluzioni sopra.</p>
+      </div>
+    </div>
+
+    <!-- 11. DISEQ FRATTE -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#d97706">11</div>
+        <h3>Disequazioni fratte</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <div class="formula-box">\( \dfrac{f(x)}{g(x)} \ge 0 \)</div>
+        <ul class="step-list">
+          <li><span class="num">1</span><span>Studia separatamente il segno di \(f(x)\) e \(g(x)\)</span></li>
+          <li><span class="num">2</span><span>Costruisci la tabella dei segni (regola del prodotto)</span></li>
+          <li><span class="num">3</span><span>La frazione è \(\ge 0\) dove <em>segni concordi</em></span></li>
+          <li><span class="num">4</span><span>Escludi sempre i punti che annullano \(g(x)\)</span></li>
+        </ul>
+        <div class="warn-box"><strong>Trucco:</strong> Se \(g(x)>0\) per ogni \(x\) (es. \(x^2+1\)), la disequazione \(f/g \ge 0\) è equivalente a \(f(x) \ge 0\).</div>
+      </div>
+    </div>
+
+    <!-- 12. DISEQ VALORE ASSOLUTO -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#7c3aed">12</div>
+        <h3>Diseq. con valore assoluto</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <table class="schema-table">
+          <tr><th>Disequazione</th><th>Equivalente (\(c>0\))</th></tr>
+          <tr><td>\(|f(x)| \le c\)</td><td>\(-c \le f(x) \le c\)</td></tr>
+          <tr><td>\(|f(x)| \ge c\)</td><td>\(f(x) \le -c\) oppure \(f(x) \ge c\)</td></tr>
+          <tr><td>\(|f(x)| \le c,\; c<0\)</td><td>\(\emptyset\)</td></tr>
+          <tr><td>\(|f(x)| \ge c,\; c\le0\)</td><td>\(\mathbb{R}\)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 13. TRASFORMAZIONI GRAFICHE -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#059669">13</div>
+        <h3>Trasformazioni grafiche</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <table class="schema-table">
+          <tr><th>Trasformazione</th><th>Effetto sul grafico</th></tr>
+          <tr><td>\(y = f(x-p)\)</td><td>Traslazione orizzontale di \(+p\) (destra)</td></tr>
+          <tr><td>\(y = f(x)+q\)</td><td>Traslazione verticale di \(+q\) (alto)</td></tr>
+          <tr><td>\(y = f(-x)\)</td><td>Simmetria rispetto all'asse \(y\)</td></tr>
+          <tr><td>\(y = -f(x)\)</td><td>Simmetria rispetto all'asse \(x\)</td></tr>
+          <tr><td>\(y = |f(x)|\)</td><td>Ribaltare in alto le parti negative</td></tr>
+          <tr><td>\(y = f(|x|)\)</td><td>Sostituire \(x<0\) con la riflessione di \(x>0\)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 14. RAZIONALIZZAZIONE -->
+    <div class="teoria-card open">
+      <div class="teoria-card-header" onclick="toggleCard(this)">
+        <div class="badge" style="background:#0891b2">14</div>
+        <h3>Razionalizzazione &amp; radicali</h3>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="teoria-card-body">
+        <div class="formula-box">\( \frac{k}{a - b\sqrt{n}} = \frac{k(a+b\sqrt{n})}{a^2 - nb^2} \)</div>
+        <p style="font-size:0.88rem;margin:8px 0 4px">Moltiplicare numeratore e denominatore per il coniugato.</p>
+        <div class="tag green">Confronto radicali</div>
+        <div class="formula-box green">Per confrontare \(a\sqrt[3]{p}\) e \(b\sqrt[3]{q}\): elevare entrambi alla terza potenza → confrontare \(a^3 p\) e \(b^3 q\)</div>
+        <div class="formula-box orange">\( \sqrt{A} - \sqrt{B} \) &nbsp;: calcola \( (\sqrt{A}-\sqrt{B})^2 = A+B-2\sqrt{AB} \)</div>
+      </div>
+    </div>
+
+  </div><!-- /teoria-grid -->
+</div><!-- /teoria-page -->
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2 — ESERCIZI
+══════════════════════════════════════════════ -->
+<div id="tab-esercizi" class="tab-content">
+<div class="esercizi-page">
+  <h2>Esercizi — Test di Ingresso Politecnico</h2>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
+
+  <!-- ──── ESERCIZIO 1 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 01</span>
+      <div class="ex-question">L'equazione \(x^4 - 9x^2 + 14 = 0\)</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t1">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(1)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(1)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>ha due (e solo due) soluzioni reali distinte</div>
+        <div class="option-item"><span class="option-label">(B)</span>ha quattro soluzioni reali distinte</div>
+        <div class="option-item"><span class="option-label">(C)</span>ha solo soluzioni negative</div>
+        <div class="option-item"><span class="option-label">(D)</span>non ha soluzioni reali</div>
+        <div class="option-item"><span class="option-label">(E)</span>ha solo soluzioni positive</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Equazione <strong>biquadratica</strong>. Poniamo \(t = x^2\):</p>
+          <p>\(t^2 - 9t + 14 = 0\)</p>
+          <p>\(\Delta = 81 - 56 = 25 > 0\)</p>
+          <p>\(t_{1,2} = \dfrac{9 \pm 5}{2} \Rightarrow t_1 = 7,\; t_2 = 2\)</p>
+          <p>Entrambi positivi → \(x^2=7 \Rightarrow x = \pm\sqrt{7}\) e \(x^2=2 \Rightarrow x = \pm\sqrt{2}\)</p>
+          <p>4 soluzioni reali distinte: \(x \in \{-\sqrt{7}, -\sqrt{2}, \sqrt{2}, \sqrt{7}\}\)</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (B)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 2 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 02</span>
+      <div class="ex-question">L'equazione \((x^5 - 4x^3)^2 = 0\) ha:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t2">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(2)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(2)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>tre soluzioni reali distinte</div>
+        <div class="option-item"><span class="option-label">(B)</span>nessuna soluzione reale</div>
+        <div class="option-item"><span class="option-label">(C)</span>dieci soluzioni reali distinte</div>
+        <div class="option-item"><span class="option-label">(D)</span>solamente le soluzioni \(x=0\) e \(x=2\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>solamente la soluzione \(x=0\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Un quadrato è zero quando la base è zero: \(x^5 - 4x^3 = 0\)</p>
+          <p>Raccoglimento: \(x^3(x^2 - 4) = 0 \Rightarrow x^3(x-2)(x+2)=0\)</p>
+          <p>Soluzioni: \(x = 0,\; x = 2,\; x = -2\) → <strong>3 radici distinte</strong></p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (A)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 3 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 03</span>
+      <div class="ex-question">Quale tra le seguenti equazioni ha radici reali di segno opposto?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t3">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(3)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(3)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>\(-3x^2 + x - 3 = 0\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>\(x^2 + 3x - 1 = 0\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>\(x^2 - 2x + 7 = 0\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>\(x^2 - 9x + 1 = 0\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>\(x^2 - 3x + 1 = 0\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Radici di segno opposto ↔ prodotto \(x_1 \cdot x_2 = c/a < 0\) <strong>e</strong> \(\Delta > 0\).</p>
+          <p><strong>(B)</strong> \(x^2+3x-1=0\): prodotto \(= -1/1 = -1 < 0\) ✓; \(\Delta = 9+4 = 13 > 0\) ✓</p>
+          <p>Verifica degli altri: (A) \(\Delta = 1-36<0\) (no sol. reali); (C) \(\Delta<0\); (D)(E) prodotto \(>0\) (stesso segno).</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (B)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 4 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 04</span>
+      <div class="ex-question">Il numero reale \(x = \dfrac{13}{5 - 2\sqrt{3}}\) verifica la condizione:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t4">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(4)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(4)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>\(x = 5 - 2\sqrt{3}\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>\(x = 5 + 2\sqrt{3}\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>\(x\) è intero</div>
+        <div class="option-item"><span class="option-label">(D)</span>\(x > 9\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>\(x = \sqrt{7}\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione — Razionalizzazione</h4>
+        <div class="solution-steps">
+          <p>Moltiplico numeratore e denominatore per il coniugato \((5+2\sqrt{3})\):</p>
+          <p>\(x = \dfrac{13(5+2\sqrt{3})}{5^2 - (2\sqrt{3})^2} = \dfrac{13(5+2\sqrt{3})}{25-12} = \dfrac{13(5+2\sqrt{3})}{13} = 5+2\sqrt{3}\)</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (B)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 5 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 05</span>
+      <div class="ex-question">Il polinomio \(P(x) = x^3 - kx^2 + 11x - 6\) è divisibile per \(x-2\)</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t5">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(5)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(5)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>se \(k=0\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>se \(k=15\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>per nessun valore di \(k\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>se \(k\) è dispari</div>
+        <div class="option-item"><span class="option-label">(E)</span>se \(k=6\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione — Teorema di Ruffini</h4>
+        <div class="solution-steps">
+          <p>\(P(x)\) divisibile per \((x-2)\) \(\Leftrightarrow\) \(P(2) = 0\)</p>
+          <p>\(P(2) = 8 - 4k + 22 - 6 = 24 - 4k = 0\)</p>
+          <p>\(4k = 24 \Rightarrow k = 6\)</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (E)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 6 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 06</span>
+      <div class="ex-question">Il grafico continuo è \(y=f(x)\). Quale funzione è il grafico tratteggiato?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t6">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(6)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(6)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-image">
+        <img src="6.png" alt="Grafico esercizio 6" onerror="this.style.display='none'">
+      </div>
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>\(y = |f(x)| + 1\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>\(y = |f(x)| - 1\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>\(y = |f(x+1)|\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>\(y = |f(x)|\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>\(y = |f(x-1)|\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione — Trasformazioni grafiche</h4>
+        <div class="solution-steps">
+          <p>La curva tratteggiata è spostata di 1 unità verso <strong>destra</strong> rispetto a \(|f(x)|\).</p>
+          <p>Traslazione destra di \(p\) → sostituire \(x\) con \(x-p\): \(y = |f(x-1)|\)</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (E)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 7 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 07</span>
+      <div class="ex-question">Sia \(p(x)=ax^2+bx+2\). Se \(p(3)=2\) e \(p(-1)=10\), allora \(p(2)\) è uguale a:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t7">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(7)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(7)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>\(-4\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>\(2\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>\(0\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>\(4\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>\(-2\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione — Sistema lineare</h4>
+        <div class="solution-steps">
+          <p>\(p(3)=2\): \(9a+3b+2=2 \Rightarrow 9a+3b=0 \Rightarrow 3a+b=0\)</p>
+          <p>\(p(-1)=10\): \(a-b+2=10 \Rightarrow a-b=8\)</p>
+          <p>Sommando: \(4a=8 \Rightarrow a=2\), \(b=-6\)</p>
+          <p>\(p(2) = 4(2)+2(-6)+2 = 8-12+2 = -2\)</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (E)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 8 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 08</span>
+      <div class="ex-question">Considera \(P(x)\le0\), \(\dfrac{P(x)}{x^2+x+1}\le0\), \(\dfrac{P(x)}{x^2-3x+2}\le0\) dove \(P(x)\) è di II grado. Quale affermazione è corretta?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t8">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(8)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(8)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>le diseq. B) e C) hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(B)</span>le diseq. A) e C) hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(C)</span>le diseq. A) e B) hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(D)</span>non si può rispondere senza conoscere \(P(x)\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>le tre diseq. hanno lo stesso insieme di soluzioni</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p><strong>B)</strong> \(x^2+x+1\): \(\Delta=1-4=-3<0\) → sempre \(>0\). Dividere per una quantità sempre positiva non cambia il verso → <strong>B ≡ A</strong></p>
+          <p><strong>C)</strong> \(x^2-3x+2=(x-1)(x-2)\): si annulla in \(x=1\) e \(x=2\) → cambia il dominio → C ≠ A, C ≠ B</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (C)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 9 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 09</span>
+      <div class="ex-question">Una soluzione dell'equazione \(\log_3(2+x)^2 = 6\) è:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t9">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(9)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(9)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>\(x=\log_2 3\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>\(x=1\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>\(x=\log_3 2\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>\(x=25\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>\(x=3^{3-\log_3 2}\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione — Equazione logaritmica</h4>
+        <div class="solution-steps">
+          <p>\(\log_3(2+x)^2 = 6 \Rightarrow (2+x)^2 = 3^6 = 729\)</p>
+          <p>\(2+x = \pm 27\)</p>
+          <p>\(x = 25\) oppure \(x = -29\)</p>
+          <p>Tra le opzioni proposte compare \(x=25\).</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (D)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 10 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 10</span>
+      <div class="ex-question">L'equazione \(4x^6 - 12x^3 = -9\)</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t10">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(10)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(10)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>non può essere risolta perché di grado troppo elevato</div>
+        <div class="option-item"><span class="option-label">(B)</span>ha una e una sola soluzione reale</div>
+        <div class="option-item"><span class="option-label">(C)</span>ha due (e solo due) soluzioni reali distinte</div>
+        <div class="option-item"><span class="option-label">(D)</span>ha tre soluzioni distinte</div>
+        <div class="option-item"><span class="option-label">(E)</span>ha sei soluzioni reali distinte</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Riscriviamo: \(4x^6 - 12x^3 + 9 = 0\). Poniamo \(t = x^3\):</p>
+          <p>\(4t^2 - 12t + 9 = 0 \Rightarrow (2t-3)^2 = 0 \Rightarrow t = \dfrac{3}{2}\)</p>
+          <p>\(x^3 = \dfrac{3}{2} \Rightarrow x = \sqrt[3]{\dfrac{3}{2}}\) — unica soluzione reale.</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (B)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 11 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 11</span>
+      <div class="ex-question">Considera \(P(x)>0\), \(\;\dfrac{P(x)}{x^2+1}>0\), \(\;\dfrac{P(x)}{x^2-1}>0\). Quale affermazione è corretta?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t11">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(11)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(11)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>le diseq. A) e B) hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(B)</span>le diseq. A) e C) hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(C)</span>non si può rispondere senza conoscere \(P(x)\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>le diseq. B) e C) hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(E)</span>le tre diseq. hanno lo stesso insieme di soluzioni</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p><strong>B)</strong> \(x^2+1 > 0\) per ogni \(x\) → dividere per quantità sempre positiva non cambia il verso → <strong>B ≡ A</strong></p>
+          <p><strong>C)</strong> \(x^2-1\) cambia segno → il verso della disequazione cambia attorno a \(x=\pm1\) → C ≠ A.</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (A)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 12 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 12</span>
+      <div class="ex-question">Considera \(\dfrac{x^2-3x}{x^2-9}=0\) (A) e \(\dfrac{x^2-3x}{x^2-3x+9}=0\) (B). Quale affermazione è vera?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t12">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(12)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(12)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>le due equazioni hanno due soluzioni in comune</div>
+        <div class="option-item"><span class="option-label">(B)</span>l'insieme soluzioni di B) è incluso in quello di A)</div>
+        <div class="option-item"><span class="option-label">(C)</span>l'insieme soluzioni di A) è incluso in quello di B)</div>
+        <div class="option-item"><span class="option-label">(D)</span>le due equazioni non hanno soluzioni comuni</div>
+        <div class="option-item"><span class="option-label">(E)</span>le due equazioni hanno lo stesso insieme di soluzioni</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p><strong>A)</strong> Numeratore: \(x(x-3)=0 \Rightarrow x=0\) o \(x=3\). Denominatore: \((x-3)(x+3)=0 \Rightarrow x=\pm3\) esclusi.</p>
+          <p>→ Solo \(x=0\) ammissibile. Soluzioni A = \(\{0\}\)</p>
+          <p><strong>B)</strong> Numeratore: \(x=0\) o \(x=3\). Denominatore: \(\Delta=9-36<0\) → sempre \(\ne0\).</p>
+          <p>→ Entrambi ammissibili. Soluzioni B = \(\{0,3\}\)</p>
+          <p>Quindi \(\{0\} \subset \{0,3\}\) → soluzioni di A incluse in soluzioni di B.</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (C)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 13 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 13</span>
+      <div class="ex-question">La disequazione \(\sqrt{2x+5} \le 3\) è soddisfatta:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t13">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(13)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(13)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>per \(-\dfrac{5}{2} \le x \le -1\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>per \(-\dfrac{5}{2} \le x \le 2\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>per \(x \ge -\dfrac{5}{2}\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>per ogni \(x\) positivo</div>
+        <div class="option-item"><span class="option-label">(E)</span>per \(x \le -\dfrac{5}{2}\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione — Disequazione irrazionale</h4>
+        <div class="solution-steps">
+          <p>Condizioni: \(\begin{cases} 2x+5 \ge 0 \Rightarrow x \ge -5/2 \\ 2x+5 \le 9 \Rightarrow x \le 2 \end{cases}\)</p>
+          <p>(Il secondo da: quadrare entrambi i lati, validi poiché \(3>0\))</p>
+          <p>Soluzione: \(-\dfrac{5}{2} \le x \le 2\)</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (B)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 14 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 14</span>
+      <div class="ex-question">L'equazione \(x^4 + 8x^2 + 15 = 0\)</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t14">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(14)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(14)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>non ha soluzioni reali</div>
+        <div class="option-item"><span class="option-label">(B)</span>ha almeno due soluzioni dello stesso segno</div>
+        <div class="option-item"><span class="option-label">(C)</span>ha due (e solo due) soluzioni reali distinte</div>
+        <div class="option-item"><span class="option-label">(D)</span>ha quattro soluzioni reali distinte</div>
+        <div class="option-item"><span class="option-label">(E)</span>ha solo soluzioni negative</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Poniamo \(t=x^2\): \(t^2+8t+15=0\), \(\Delta=64-60=4\)</p>
+          <p>\(t_{1,2}=\dfrac{-8\pm2}{2} \Rightarrow t_1=-3,\; t_2=-5\)</p>
+          <p>Entrambe negative! Non esistono \(x^2<0\) in \(\mathbb{R}\) → <strong>nessuna soluzione reale</strong>.</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (A)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 15 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 15</span>
+      <div class="ex-question">Considera \(\dfrac{x^2-3x}{x^3+27}=0\) (A) e \(\dfrac{x^2-3x}{x^3-27}=0\) (B). Quale affermazione è vera?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t15">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(15)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(15)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>l'insieme soluzioni di B) è incluso nell'insieme soluzioni di A)</div>
+        <div class="option-item"><span class="option-label">(B)</span>l'insieme soluzioni di A) è incluso nell'insieme soluzioni di B)</div>
+        <div class="option-item"><span class="option-label">(C)</span>le due equazioni non hanno soluzioni comuni</div>
+        <div class="option-item"><span class="option-label">(D)</span>le due equazioni hanno due soluzioni in comune</div>
+        <div class="option-item"><span class="option-label">(E)</span>le due equazioni hanno lo stesso insieme di soluzioni</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Numeratore comune: \(x(x-3)=0 \Rightarrow x=0\) o \(x=3\)</p>
+          <p><strong>A)</strong> \(x^3+27=(x+3)(x^2-3x+9)\). Zero del denom: \(x=-3\). Soluzioni: \(\{0, 3\}\)</p>
+          <p><strong>B)</strong> \(x^3-27=(x-3)(x^2+3x+9)\). Zero del denom: \(x=3\) → escluso!</p>
+          <p>Soluzioni B: \(\{0\}\) — incluse in \(\{0,3\}\)</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (A)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 16 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 16</span>
+      <div class="ex-question">I numeri \(2\sqrt[3]{5},\; 5\sqrt[3]{2},\; 3\sqrt[3]{3}\) stanno nella seguente relazione d'ordine:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t16">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(16)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(16)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>\(2\sqrt[3]{5} < 5\sqrt[3]{2} < 3\sqrt[3]{3}\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>\(5\sqrt[3]{2} < 2\sqrt[3]{5} < 3\sqrt[3]{3}\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>\(3\sqrt[3]{3} < 2\sqrt[3]{5} < 5\sqrt[3]{2}\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>\(5\sqrt[3]{2} < 3\sqrt[3]{3} < 2\sqrt[3]{5}\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>\(2\sqrt[3]{5} < 3\sqrt[3]{3} < 5\sqrt[3]{2}\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione — Confronto radicali</h4>
+        <div class="solution-steps">
+          <p>Eleviamo alla terza potenza (funzione crescente):</p>
+          <p>\((2\sqrt[3]{5})^3 = 8 \cdot 5 = 40\)</p>
+          <p>\((3\sqrt[3]{3})^3 = 27 \cdot 3 = 81\)</p>
+          <p>\((5\sqrt[3]{2})^3 = 125 \cdot 2 = 250\)</p>
+          <p>Ordine: \(40 < 81 < 250\) → \(2\sqrt[3]{5} < 3\sqrt[3]{3} < 5\sqrt[3]{2}\)</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (E)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 17 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 17</span>
+      <div class="ex-question">Sia \(a = \sqrt{3-\sqrt{5}} - \sqrt{3+\sqrt{5}}\). Quali affermazioni tra: i) \(a^2\) razionale; ii) \(a<0\); iii) \(a\) intero — sono vere?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t17">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(17)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(17)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>solo ii) è vera</div>
+        <div class="option-item"><span class="option-label">(B)</span>tutte e tre vere</div>
+        <div class="option-item"><span class="option-label">(C)</span>tutte e tre false</div>
+        <div class="option-item"><span class="option-label">(D)</span>i) è falsa</div>
+        <div class="option-item"><span class="option-label">(E)</span>solo iii) è falsa</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p><strong>i)</strong> \(a^2 = (3-\sqrt5)+(3+\sqrt5)-2\sqrt{(3-\sqrt5)(3+\sqrt5)} = 6 - 2\sqrt{9-5} = 6-2\cdot2 = 2\) ✓ razionale</p>
+          <p><strong>ii)</strong> \(3+\sqrt5 > 3-\sqrt5 \Rightarrow \sqrt{3+\sqrt5} > \sqrt{3-\sqrt5} \Rightarrow a < 0\) ✓</p>
+          <p><strong>iii)</strong> \(a^2=2 \Rightarrow a=-\sqrt{2}\) ≠ intero ✗</p>
+          <p>Quindi i) e ii) vere, iii) falsa.</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (E)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 18 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 18</span>
+      <div class="ex-question">Considera \(\dfrac{Q(x)}{x^4-1}<0\) (A), \(\dfrac{Q(x)}{x^4+1}<0\) (B), \(Q(x)<0\) (C) con \(Q\) di II grado. Quale affermazione è corretta?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t18">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(18)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(18)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>le tre diseq. hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(B)</span>le diseq. A) e C) hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(C)</span>non si può rispondere senza conoscere \(Q(x)\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>le diseq. A) e B) hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(E)</span>le diseq. B) e C) hanno lo stesso insieme di soluzioni</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p><strong>B)</strong> \(x^4+1 > 0\) per ogni \(x\) → dividere non cambia il verso → <strong>B ≡ C</strong></p>
+          <p><strong>A)</strong> \(x^4-1\) cambia segno → non equivalente a C.</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (E)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 19 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 19</span>
+      <div class="ex-question">Due rette \(y=ax+1\) e \(y=bx+7\) si incontrano nel punto di ascissa \(x=-2\). Allora necessariamente:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t19">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(19)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(19)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>\(a > b\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>\(a=-3\) e \(b=0\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>\(a = b\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>\(a=0\) e \(b=3\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>\(a < b\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Nel punto di intersezione: \(-2a+1 = -2b+7\)</p>
+          <p>\(-2a+2b = 6 \Rightarrow b-a=3 \Rightarrow b=a+3 > a\)</p>
+          <p>Dunque \(a < b\).</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (E)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 20 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 20</span>
+      <div class="ex-question">Quale delle seguenti equazioni ha radici reali di segno opposto?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t20">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(20)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(20)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>\(4x^2 - x + 4 = 0\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>\(2x^2 - \sqrt{5} = 0\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>\(x - x^2 = 0\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>\(x^2 + 2x - 2 = 0\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>\(2x^2 + 3 = 0\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione — Viète</h4>
+        <div class="solution-steps">
+          <p>Radici di segno opposto ↔ prodotto \(c/a < 0\) e \(\Delta > 0\).</p>
+          <p><strong>(B)</strong> \(2x^2-\sqrt5=0\): \(c/a = -\sqrt5/2 < 0\) ✓; \(\Delta = 0+8\sqrt5>0\) ✓</p>
+          <p>(A): \(\Delta=1-64<0\) — nessuna sol. reale. (D): \(c/a=-2<0\) ✓ ma radici di segno opposto? Sì. Però (B) è più diretto con prodotto \(<0\) e \(b=0\) (radici simmetriche).</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (B)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 21 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 21</span>
+      <div class="ex-question">Due rette \(y=ax+1\) e \(y=bx-3\) si incontrano nel punto di ascissa \(x=5\). Allora necessariamente:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t21">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(21)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(21)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>\(a = b\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>\(a = -\frac{4}{5}\) e \(b=0\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>\(a > b\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>\(a=0\) e \(b=\frac{4}{5}\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>\(a < b\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>\(5a+1 = 5b-3 \Rightarrow 5a-5b=-4 \Rightarrow a-b=-\dfrac{4}{5} < 0 \Rightarrow a < b\)</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (E)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 22 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 22</span>
+      <div class="ex-question">Sia \(p(x)=ax^2+bx-1\). Se \(p(2)=17\) e \(p(-3)=2\), allora \(p(-5)\) è uguale a:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t22">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(22)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(22)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>12</div>
+        <div class="option-item"><span class="option-label">(B)</span>10</div>
+        <div class="option-item"><span class="option-label">(C)</span>24</div>
+        <div class="option-item"><span class="option-label">(D)</span>15</div>
+        <div class="option-item"><span class="option-label">(E)</span>28</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>\(p(2)=4a+2b-1=17 \Rightarrow 4a+2b=18 \Rightarrow 2a+b=9\)</p>
+          <p>\(p(-3)=9a-3b-1=2 \Rightarrow 9a-3b=3 \Rightarrow 3a-b=1\)</p>
+          <p>Somma: \(5a=10 \Rightarrow a=2,\; b=5\)</p>
+          <p>\(p(-5) = 2(25)+5(-5)-1 = 50-25-1 = 24\)</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (C)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 23 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 23</span>
+      <div class="ex-question">Considera \(\dfrac{x^2-3x}{x^2-9}=0\) (A) e \(\dfrac{x^2-3x}{x^2-3x+9}=0\) (B). Quale affermazione è vera?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t23">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(23)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(23)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>l'insieme soluzioni di B) è incluso in quello di A)</div>
+        <div class="option-item"><span class="option-label">(B)</span>le due equazioni non hanno soluzioni comuni</div>
+        <div class="option-item"><span class="option-label">(C)</span>le due equazioni hanno due soluzioni in comune</div>
+        <div class="option-item"><span class="option-label">(D)</span>le due equazioni hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(E)</span>l'insieme soluzioni di A) è incluso in quello di B)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Identico all'esercizio 12. Soluzioni A = \(\{0\}\), Soluzioni B = \(\{0,3\}\).</p>
+          <p>\(\{0\} \subset \{0,3\}\) → l'insieme di A è incluso in quello di B.</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (E)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 24 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 24</span>
+      <div class="ex-question">Considera \(P(x)>0\) (A), \(\dfrac{P(x)}{x^2+1}>0\) (B), \(\dfrac{P(x)}{x^2-1}>0\) (C). Quale affermazione è corretta?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t24">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(24)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(24)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>le diseq. A) e B) hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(B)</span>le tre diseq. hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(C)</span>le diseq. A) e C) hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(D)</span>le diseq. B) e C) hanno lo stesso insieme di soluzioni</div>
+        <div class="option-item"><span class="option-label">(E)</span>non si può rispondere senza conoscere \(P(x)\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>\(x^2+1>0\) sempre → B ≡ A (stesse soluzioni).</p>
+          <p>\(x^2-1\) cambia segno → C ≠ A.</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (A)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 25 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 25</span>
+      <div class="ex-question">L'insieme delle soluzioni della disequazione \(ax > -2\), con \(a\) reale non nullo, è:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t25">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(25)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(25)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>la semiretta \(x > -2/a\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>la semiretta \(x < -2/a\) oppure la semiretta \(x > -2/a\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>la semiretta \(x < -2/a\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>l'intero asse reale</div>
+        <div class="option-item"><span class="option-label">(E)</span>l'insieme vuoto</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Se \(a>0\): dividendo per \(a>0\) → \(x > -2/a\) (semiretta destra)</p>
+          <p>Se \(a<0\): dividendo per \(a<0\), il verso si inverte → \(x < -2/a\) (semiretta sinistra)</p>
+          <p>L'insieme soluzione è una semiretta, ma non si sa quale senza il segno di \(a\).</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (B)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 26 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 26</span>
+      <div class="ex-question">L'equazione \(x^6 - 7x^3 = 8\)</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t26">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(26)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(26)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>ha sei soluzioni reali distinte</div>
+        <div class="option-item"><span class="option-label">(B)</span>ha una e una sola soluzione reale</div>
+        <div class="option-item"><span class="option-label">(C)</span>non può essere risolta perché di grado troppo elevato</div>
+        <div class="option-item"><span class="option-label">(D)</span>ha due soluzioni distinte, entrambe positive</div>
+        <div class="option-item"><span class="option-label">(E)</span>ha due (e solo due) soluzioni reali distinte</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Riscriviamo: \(x^6-7x^3-8=0\). Poniamo \(t=x^3\):</p>
+          <p>\(t^2-7t-8=0\), \(\Delta=49+32=81\)</p>
+          <p>\(t_{1,2}=\dfrac{7\pm9}{2} \Rightarrow t_1=8,\; t_2=-1\)</p>
+          <p>\(x^3=8 \Rightarrow x=2\) &nbsp;&nbsp; \(x^3=-1 \Rightarrow x=-1\)</p>
+          <p>Due soluzioni reali distinte: una positiva (\(x=2\)) e una negativa (\(x=-1\)).</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (E)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 27 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 27</span>
+      <div class="ex-question">L'equazione \(x^4 + 8x^2 + 15 = 0\)</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t27">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(27)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(27)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>ha almeno due soluzioni dello stesso segno</div>
+        <div class="option-item"><span class="option-label">(B)</span>ha solo soluzioni negative</div>
+        <div class="option-item"><span class="option-label">(C)</span>non ha soluzioni reali</div>
+        <div class="option-item"><span class="option-label">(D)</span>ha quattro soluzioni reali distinte</div>
+        <div class="option-item"><span class="option-label">(E)</span>ha due (e solo due) soluzioni reali distinte</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Stessa equazione dell'es. 14. \(t=x^2\): \(t^2+8t+15=0 \Rightarrow t=-3\) o \(t=-5\), entrambe negative → nessuna soluzione reale.</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (C)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 28 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 28</span>
+      <div class="ex-question">L'equazione \((x^5 - 4x^3)^2 = 0\) ha:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t28">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(28)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(28)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>dieci soluzioni reali distinte</div>
+        <div class="option-item"><span class="option-label">(B)</span>solamente la soluzione \(x=0\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>nessuna soluzione reale</div>
+        <div class="option-item"><span class="option-label">(D)</span>tre soluzioni reali distinte</div>
+        <div class="option-item"><span class="option-label">(E)</span>solamente le soluzioni \(x=0\) e \(x=2\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Identico all'es. 2. \(x^3(x-2)(x+2)=0 \Rightarrow x=0,\;x=2,\;x=-2\).</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (D)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 29 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 29</span>
+      <div class="ex-question">L'equazione \((2x^2 - 11)(x^4 - x^2 + 5) = 0\)</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t29">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(29)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(29)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>ha sei soluzioni reali</div>
+        <div class="option-item"><span class="option-label">(B)</span>ha solo soluzioni negative</div>
+        <div class="option-item"><span class="option-label">(C)</span>ha due (e solo due) soluzioni reali</div>
+        <div class="option-item"><span class="option-label">(D)</span>ha almeno due soluzioni reali dello stesso segno</div>
+        <div class="option-item"><span class="option-label">(E)</span>non ha soluzioni reali</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p><strong>Fattore 1:</strong> \(2x^2-11=0 \Rightarrow x^2=\frac{11}{2} \Rightarrow x=\pm\sqrt{\frac{11}{2}}\) — 2 soluzioni reali</p>
+          <p><strong>Fattore 2:</strong> \(x^4-x^2+5=0\). Poniamo \(t=x^2\): \(t^2-t+5=0\), \(\Delta=1-20=-19<0\) → nessuna sol. reale</p>
+          <p>Totale: esattamente 2 soluzioni reali distinte.</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (C)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 30 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 30</span>
+      <div class="ex-question">La relazione \(\sqrt[3]{8-x^2} \ge 2\) è soddisfatta:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t30">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(30)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(30)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>per ogni \(x\) reale</div>
+        <div class="option-item"><span class="option-label">(B)</span>per \(x \ge \sqrt{8}\) e per \(x \le -\sqrt{8}\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>solamente per \(x=0\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>per nessun \(x\) reale</div>
+        <div class="option-item"><span class="option-label">(E)</span>per ogni \(x \ge 0\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione — Radice cubica (monotona)</h4>
+        <div class="solution-steps">
+          <p>La radice cubica è monotona crescente → possiamo elevare alla terza potenza senza cambiare il verso:</p>
+          <p>\(8-x^2 \ge 2^3 = 8\)</p>
+          <p>\(-x^2 \ge 0 \Rightarrow x^2 \le 0\)</p>
+          <p>L'unico valore reale con \(x^2 \le 0\) è \(x=0\).</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (C)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 31 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 31</span>
+      <div class="ex-question">La disequazione \(\sqrt{2x+5} \le 3\) è soddisfatta:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t31">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(31)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(31)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>per \(x \ge -\dfrac{5}{2}\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>per \(-\dfrac{5}{2} \le x \le -1\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>per ogni \(x\) positivo</div>
+        <div class="option-item"><span class="option-label">(D)</span>per \(-\dfrac{5}{2} \le x \le 2\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>per \(x \le -\dfrac{5}{2}\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Sistema: \(\begin{cases}2x+5\ge0 \\ 2x+5\le9\end{cases} \Rightarrow \begin{cases}x\ge-5/2 \\ x\le2\end{cases}\)</p>
+          <p>Soluzione: \(-\dfrac{5}{2} \le x \le 2\)</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (D)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 32 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 32</span>
+      <div class="ex-question">Il numero reale \(x\) verifica \(\dfrac{\sqrt{2x-1}(x-1)}{x} \le 0\) se e solo se:</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t32">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(32)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(32)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>\(\frac{1}{2} \le x \le 1\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>\(0 < x \le \frac{1}{2}\) oppure \(x \ge 1\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>\(0 < x < 1\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>\(0 < x \le 1\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>\(x < 0\) oppure \(x \ge 1\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p><strong>Dominio:</strong> \(2x-1 \ge 0 \Rightarrow x \ge 1/2\); \(x \ne 0\). Dominio: \(x \ge 1/2\).</p>
+          <p>\(\sqrt{2x-1} \ge 0\) sempre. Segno dipende da \(\dfrac{x-1}{x}\).</p>
+          <p>Per \(x \ge 1/2\): la frazione \((x-1)/x\) è \(\le 0\) quando \(1/2 \le x \le 1\) (numeratore \(\le0\), denominatore \(>0\)).</p>
+          <p>Attenzione: se \(\sqrt{2x-1}=0\) (cioè \(x=1/2\)) anche il prodotto è 0 ✓</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (A)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 33 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 33</span>
+      <div class="ex-question">Il grafico continuo è \(y=f(x)\). Quale funzione è il grafico tratteggiato?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t33">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(33)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(33)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-image">
+        <img src="33.png" alt="Grafico esercizio 33" onerror="this.style.display='none'">
+      </div>
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>\(y = |f(x-1)|\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>\(y = |f(x)| + 1\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>\(y = |f(x)| - 1\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>\(y = |f(x)|\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>\(y = |f(x+1)|\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione — Trasformazioni grafiche</h4>
+        <div class="solution-steps">
+          <p>La curva tratteggiata è la riflessione rispetto all'asse \(x\) della parte negativa + traslazione di 1 verso sinistra.</p>
+          <p>Traslazione sinistra di 1 → sostituire \(x\) con \(x+1\): \(y = |f(x+1)|\)</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (E)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ESERCIZIO 34 ──── -->
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">ES. 34</span>
+      <div class="ex-question">Quale delle seguenti equazioni ha radici reali di segno opposto?</div>
+      <div class="timer-area">
+        <span class="timer-display" id="t34">2:00</span>
+        <button class="timer-btn start" onclick="startTimer(34)">▶ Start</button>
+        <button class="timer-btn reset" onclick="resetTimer(34)">↺</button>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="options-grid">
+        <div class="option-item"><span class="option-label">(A)</span>\(2x^2 + 3 = 0\)</div>
+        <div class="option-item"><span class="option-label">(B)</span>\(2x^2 - \sqrt{5} = 0\)</div>
+        <div class="option-item"><span class="option-label">(C)</span>\(4x^2 - x + 4 = 0\)</div>
+        <div class="option-item"><span class="option-label">(D)</span>\(x^2 + 2x - 2 = 0\)</div>
+        <div class="option-item"><span class="option-label">(E)</span>\(x - x^2 = 0\)</div>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">🔍 Mostra soluzione</button>
+      <div class="solution-box">
+        <h4>Soluzione</h4>
+        <div class="solution-steps">
+          <p>Radici di segno opposto ↔ \(c/a < 0\) e \(\Delta > 0\).</p>
+          <p><strong>(B)</strong> \(c/a = -\sqrt{5}/2 < 0\) ✓; \(\Delta = 0+8\sqrt{5}>0\) ✓ → radici \(x = \pm\sqrt{\sqrt{5}/2}\), effettivamente di segno opposto.</p>
+        </div>
+        <span class="answer-badge">✓ Risposta: (B)</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /esercizi-page -->
+</div>
+
+<!-- ══════════════ JAVASCRIPT ══════════════ -->
+<script>
+/* ── Tab switching ── */
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ── Theory cards toggle ── */
+function toggleCard(header) {
+  header.parentElement.classList.toggle('open');
+}
+
+/* ── Solution toggle ── */
+function toggleSolution(btn) {
+  const box = btn.nextElementSibling;
+  box.classList.toggle('visible');
+  btn.textContent = box.classList.contains('visible') ? '▲ Nascondi soluzione' : '🔍 Mostra soluzione';
+  updateProgress();
+}
+
+/* ── Progress bar ── */
+function updateProgress() {
+  const total = document.querySelectorAll('.solution-box').length;
+  const open  = document.querySelectorAll('.solution-box.visible').length;
+  document.getElementById('progressBar').style.width = (open / total * 100) + '%';
+}
+
+/* ── Timer logic ── */
+const timers = {};
+const DURATION = 120; // 2 minutes
+
+function getDisplay(id) { return document.getElementById('t' + id); }
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+
+function startTimer(id) {
+  if (timers[id] && timers[id].interval) return; // already running
+  if (!timers[id]) timers[id] = { remaining: DURATION };
+  if (timers[id].remaining <= 0) timers[id].remaining = DURATION;
+
+  const display = getDisplay(id);
+  display.classList.remove('warning', 'danger');
+
+  timers[id].interval = setInterval(() => {
+    timers[id].remaining--;
+    const r = timers[id].remaining;
+    display.textContent = formatTime(r);
+
+    if (r <= 10) {
+      display.classList.remove('warning');
+      display.classList.add('danger');
+    } else if (r <= 30) {
+      display.classList.remove('danger');
+      display.classList.add('warning');
+    }
+
+    if (r <= 0) {
+      clearInterval(timers[id].interval);
+      timers[id].interval = null;
+      display.textContent = '0:00';
+      playBeep();
+    }
+  }, 1000);
+}
+
+function resetTimer(id) {
+  if (timers[id] && timers[id].interval) {
+    clearInterval(timers[id].interval);
+    timers[id].interval = null;
+  }
+  timers[id] = { remaining: DURATION };
+  const display = getDisplay(id);
+  display.textContent = formatTime(DURATION);
+  display.classList.remove('warning', 'danger');
+}
+
+/* ── Fun beep via Web Audio API ── */
+function playBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523.25, 659.25, 783.99, 1046.5]; // C5 E5 G5 C6
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.25);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + i * 0.12);
+      osc.stop(ctx.currentTime + i * 0.12 + 0.3);
+    });
+  } catch(e) {}
+}
+
+/* ── Init: open all teoria cards ── */
+document.addEventListener('DOMContentLoaded', () => {
+  // All cards start open already via class
+});
+</script>
+</body>
+</html>
